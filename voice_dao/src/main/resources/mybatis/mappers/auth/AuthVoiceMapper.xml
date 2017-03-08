@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mobanker.voice.dao.auth.AuthVoiceMapper">
+	<resultMap id="getMap" type="com.mobanker.voice.model.entity.auth.AuthVoiceEntity"/>
+
+	<!--所有的字段-->
+	<sql id="ALL_COLUMN">
+		id,
+		user_id,
+		order_no,
+		upload_sid,
+		bill_no,
+		sku_number,
+		audio_id,
+		voice_last,
+		file_size,
+		file_path,
+		upload_begin_time,
+		upload_time,
+		upload_duration,
+		mq_call_time,
+		file_name,
+		voice_text,
+		mq_result_status,
+		es_compare_time,
+		text_pass_rate,
+		key_word_pass_rate,
+		es_result,
+		trans_duration,
+		status,
+		ask_user_name,
+		ask_user_phone,
+		audit_remark,
+		supervisor_remark,
+		create_user,
+		create_time,
+		update_user,
+		update_time
+	</sql>
+
+    <sql id="WHERE_COLUMN">
+		<where>
+			   1=1
+			<if test="userId != null and userId !=''">
+				 and user_id = #{userId}
+			</if>
+
+			<if test="audioId != null and audioId !=''">
+				and audio_id = #{audioId}
+			</if>
+
+			<if test="askUserPhone != null and askUserPhone !=''">
+				and ask_user_phone = #{askUserPhone}
+			</if>
+
+			<if test="createTime != null and createTime !=''">
+				and create_time >= #{createTime}
+			</if>
+
+			<if test="updateTime != null and updateTime !=''">
+			<![CDATA[	and create_time <= #{updateTime}   ]]>
+			</if>
+		</where>
+	</sql>
+    <!--分页查询语音识别列表 ：-->
+    <!--按照传入的参数是否有值进行升序和降序切换,默认按关键字通过率升序排序-->
+	<select id="findPage" resultMap="getMap">
+       select
+		 <include refid="ALL_COLUMN"/>
+       from mobanker_syd.syd_auth_voice_record
+	   <include refid="WHERE_COLUMN"/>
+		order by
+			<if test="keyWordPassRate != null">
+				<if test="keyWordPassRate =='1'.toString()">
+					key_word_pass_rate desc ,
+				</if>
+				<if test="keyWordPassRate =='0'.toString()">
+					key_word_pass_rate asc,
+				</if>
+			</if>
+			<if test="textPassRate !=null">
+                <if test="textPassRate == '1'.toString()">
+                    text_pass_rate desc ,
+                </if>
+                <if test="textPassRate == '0'.toString()">
+                    text_pass_rate asc ,
+                </if>
+			</if>
+		    create_time desc
+		limit #{page.offset},#{page.pageSize}
+      <!-- limit #{paramDto.page.page*paramDto.page.pageSize},#{paramDto.page.pageSize}-->
+
+	</select>
+
+
+	<select id="findPageCount"  resultType="int">
+		select
+		  count(id)
+		from mobanker_syd.syd_auth_voice_record
+		<include refid="WHERE_COLUMN"/>
+
+	</select>
+
+
+	<update id="updateStatus">
+		update  mobanker_syd.syd_auth_voice_record
+		<set>
+			<if test="supervisorRemark != null  and supervisorRemark !=''">
+				supervisor_remark = #{supervisorRemark},
+			</if>
+			 status = 'success',
+			 update_time = now()
+		</set>
+		where id = #{id}
+
+	</update>
+</mapper>

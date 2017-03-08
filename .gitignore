@@ -1,0 +1,16 @@
+# Created by .ignore support plugin (hsz.mobi)
+*.iml
+*/.idea/*
+.classpath
+.project
+.settings/
+target/
+src/main/webapp/WEB-INF/classes/
+src/main/webapp/WEB-INF/lib/
+/bin
+.idea
+*/logs
+
+logs/
+
+*-reduced-pom.xml

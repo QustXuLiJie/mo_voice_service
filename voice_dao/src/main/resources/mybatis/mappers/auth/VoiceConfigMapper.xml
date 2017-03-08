@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mobanker.voice.dao.auth.VoiceConfigMapper">
+    <resultMap id="getMap" type="com.mobanker.voice.model.entity.auth.VoiceConfigEntity"/>
+
+    <!--所有的字段-->
+    <sql id="ALL_COLUMN">
+        id,
+        status,
+        product,
+        preset_text,
+        preset_type,
+        gate_common_text,
+        gate_key,
+        create_user,
+        create_time,
+        update_user,
+        update_time
+    </sql>
+
+    <sql id="WHERE_COLUMN">
+        <where>
+            1=1
+            <if test="updateTime != null and updateTime !=''">
+                <![CDATA[	and create_time <= #{updateTime}   ]]>
+            </if>
+        </where>
+    </sql>
+
+    <!--	保存预设文本和相关阈值-->
+    <insert id="saveVoiceConfig" useGeneratedKeys="true" keyProperty="id">
+
+        insert into mobanker_syd.syd_voice_config
+        (status,product,preset_text,preset_type,gate_common_text,gate_key,create_time,create_user,update_time,update_user)
+        values
+        ('1',#{product},#{presetText},#{presetType},#{gateCommonText},#{gateKey},now(),#{createUser},now(),#{updateUser})
+
+    </insert>
+
+
+    <select id="getPreText" resultMap="getMap">
+        select
+        <include refid="ALL_COLUMN"/>
+        from mobanker_syd.syd_voice_config
+        where status = '1' and product = #{product}
+        limit 1
+    </select>
+
+    <delete id="deleteById">
+         delete from
+         mobanker_syd.syd_voice_config
+         where status='1' and id = #{id}
+
+    </delete>
+</mapper>

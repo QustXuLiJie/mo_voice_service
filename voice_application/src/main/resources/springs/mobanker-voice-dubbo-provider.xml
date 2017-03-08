@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="${dubbo.application}" owner="mobanker-voice"/>
+    <dubbo:registry protocol="zookeeper" address="${dubbo.zk.url}" timeout="${dubbo.zk.timeout}"/>
+    <dubbo:monitor protocol="registry"/>
+    <dubbo:protocol name="dubbo" port="${dubbo.port}"/>
+    <dubbo:protocol name="hessian" port="${dubbo.hessian.port}"/>
+    <!-- 自定义拦截器 -->
+    <dubbo:provider filter="eventlog"/>
+
+    <!-- 日志记录 -->
+    <bean id="apiServiceLogDubboService" class="com.mobanker.voice.service.log.ApiServiceLogServiceImpl"/>
+    <bean id="esbServiceLogDubboService" class="com.mobanker.voice.service.log.EsbServiceLogServiceImpl" />
+    <bean id="esbCommonBusiness" class="com.mobanker.voice.business.common.EsbCommonBusinessImpl" />
+    <dubbo:service interface="com.mobanker.voice.dubbo.service.log.ApiServiceLogDubboService"
+                   ref="apiServiceLogDubboService" protocol="dubbo" timeout="10000" version="1.0.9"/>
+
+    <!--语音识别-->
+    <bean id="authVoiceDubboServvice" class="com.mobanker.voice.service.auth.AuthVoiceServiceImpl"/>
+    <dubbo:service interface="com.mobanker.voice.dubbo.service.auth.AuthVoiceDubboService"
+                   ref="authVoiceDubboServvice" protocol="dubbo" timeout="10000" version="1.0.9"/>
+</beans>

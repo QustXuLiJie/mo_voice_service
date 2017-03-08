@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <!-- Database配置 -->
+    <import resource="classpath:/springs/mobanker-voice-spring-database.xml"/>
+    <!--Spring切面配置 -->
+    <import resource="classpath:/springs/mobanker-voice-spring-aop.xml"/>
+    <!-- Zookeeper -->
+    <import resource="classpath:/springs/mobanker-voice-spring-zookeeper.xml"/>
+    <!-- Redis配置 -->
+    <import resource="classpath:/springs/mobanker-voice-spring-redis.xml"/>
+    <!--Dubbo服务注册 -->
+    <import resource="classpath:/springs/mobanker-voice-dubbo-provider.xml"/>
+    <!--Dubbo服务消费 -->
+    <import resource="classpath:/springs/mobanker-voice-dubbo-consumer.xml"/>
+    <!-- EE -->
+    <import resource="classpath:springs/mobanker-fx-ee.xml" />
+</beans>
